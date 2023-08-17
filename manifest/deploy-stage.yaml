@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: kubescape-webhook
+  name: kubescape-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubescape-webhook
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: kubescape-webhook
+    spec:
+      serviceAccount: kubescape-webhook-sa
+      containers:
+      - image: sanskardevops/kubescapecontroller:0.1.0
+        name: kuvescapecontroller
+        args:
+        - --tls-cert-file=/var/run/webhook/serving-cert/tls.crt
+        - --tls-private-key-file=/var/run/webhook/serving-cert/tls.key
+        - --v=4
+        resources: {}
+        volumeMounts:
+          - name: serving-cert
+            mountPath: /var/run/webhook/serving-cert
+      volumes:
+        - name: serving-cert
+          secret:
+            secretName: certs
+status: {}
